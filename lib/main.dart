@@ -254,7 +254,9 @@ class ProductsList extends StatelessWidget {
         if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return new Text('Loading...');
+            return new Center(
+              child: new CircularProgressIndicator(),
+            );
           default:
             return new ListView(
               children:
@@ -262,11 +264,41 @@ class ProductsList extends StatelessWidget {
                 return new ListTile(
                   title: new Text(document['title']),
                   subtitle: new Text(document['description']),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProductDetailPage()),
+                    );
+                  },
                 );
               }).toList(),
             );
         }
       },
+    );
+  }
+}
+
+class ProductDetailPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Product Detail"),
+      ),
+      body: Column(
+        children: <Widget>[
+          RaisedButton(
+            child: Text('Buy now'),
+            onPressed: () {},
+          ),
+          FlatButton(
+            child: Text('Add to cart'),
+            onPressed: () {},
+          )
+        ],
+      ),
     );
   }
 }
