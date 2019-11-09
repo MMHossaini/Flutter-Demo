@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
@@ -114,6 +115,17 @@ class _MyHomePageState extends State<MyHomePage> {
             Icon(Icons.map),
           ],
         ),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text('Create Product'),
+          icon: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddProductPage()),
+            );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ), //
     );
   }
@@ -299,6 +311,69 @@ class ProductDetailPage extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class AddProductPage extends StatefulWidget {
+  @override
+  AddProductPageState createState() {
+    return AddProductPageState();
+  }
+}
+
+class AddProductPageState extends State<AddProductPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("New Product"),
+        actions: <Widget>[
+          IconButton(
+            splashColor: Colors.red,
+            onPressed: () {},
+            icon: Icon(Icons.done),
+          )
+        ],
+      ),
+      body: Form(
+          key: _formKey,
+          child: Padding(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Title'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please give your product a title.';
+                    }
+                  },
+                ),
+                TextFormField(
+                  maxLines: 3,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Description',
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please give your product a description.';
+                    }
+                  },
+                ),
+                TextFormField(
+                  inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                      labelText: 'Price', icon: Icon(Icons.attach_money)),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          )),
     );
   }
 }
