@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'create-product.dart';
 import 'main.dart';
 
 class HomePage extends StatefulWidget {
@@ -132,7 +133,8 @@ class HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddProductPage()),
+                    MaterialPageRoute(
+                        builder: (context) => CreateProductPage()),
                   );
                 },
               ),
