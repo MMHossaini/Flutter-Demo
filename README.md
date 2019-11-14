@@ -7,9 +7,8 @@ A new Flutter project.
 * Install flutter on your machine
 * `git clone https://github.com/MMHossaini/Flutter.git`
 * `cd Flutter`
+* Download the generated `google-services.json` from firebase project and place it inside `android/app`. 
 * `flutter run`
-
-Using the Firebase Console, add an Android app to your project: Follow the assistant, download the generated `google-services.json` file and place it inside `android/app`. 
 
 This project is a starting point for a Flutter application.
 
