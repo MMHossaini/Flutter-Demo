@@ -56,100 +56,119 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: new Text("Mustafa Hossaini"),
-                accountEmail: new Text("mustafahossainni@gmail.com"),
-                onDetailsPressed: () {
+    return new StreamBuilder(
+        stream: Firestore.instance
+            .collection('users')
+            .document(widget.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          var userDocument = snapshot.data;
+          return DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              drawer: Drawer(
+                child: ListView(
+                  children: <Widget>[
+                    UserAccountsDrawerHeader(
+                      accountName: new Text(userDocument["firstName"] +
+                          " " +
+                          userDocument["lastName"]),
+                      accountEmail: new Text(userDocument["email"]),
+                      onDetailsPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage()),
+                        );
+                      },
+                      currentAccountPicture: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              "https://www.fakenamegenerator.com/images/sil-female.png")),
+                    ),
+                    new ListTile(
+                        leading: Icon(Icons.settings),
+                        title: new Text("Setting"),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SettingsPage()),
+                          );
+                        }),
+                    new ListTile(
+                        leading: Icon(Icons.help),
+                        title: new Text("Help"),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage()),
+                          );
+                        }),
+                    new ListTile(
+                        leading: Icon(Icons.history),
+                        title: new Text("Order History "),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OrderHistoryPage()),
+                          );
+                        }),
+                    new ListTile(
+                        leading: Icon(Icons.power_settings_new),
+                        title: new Text(
+                          "Logout",
+                          style: new TextStyle(
+                              color: Colors.redAccent, fontSize: 17.0),
+                        ),
+                        onTap: () {
+                          FirebaseAuth.instance
+                              .signOut()
+                              .then((result) => Navigator.pushReplacementNamed(
+                                  context, "/login"))
+                              .catchError((err) => print(err));
+                        })
+                  ],
+                ),
+              ),
+              appBar: AppBar(
+                title: Text(widget.title),
+                bottom: TabBar(
+                  tabs: [
+                    Tab(text: 'List'),
+                    Tab(
+                      text: 'Map',
+                    ),
+                  ],
+                ),
+              ),
+              body: TabBarView(
+                children: [
+                  ProductsList(),
+                  Icon(Icons.map),
+                ],
+              ),
+              floatingActionButton: FloatingActionButton.extended(
+                label: Text('Create Product'),
+                icon: Icon(Icons.add),
+                onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                    MaterialPageRoute(builder: (context) => AddProductPage()),
                   );
                 },
-                currentAccountPicture: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://www.fakenamegenerator.com/images/sil-female.png")),
               ),
-              new ListTile(
-                  leading: Icon(Icons.settings),
-                  title: new Text("Setting"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsPage()),
-                    );
-                  }),
-              new ListTile(
-                  leading: Icon(Icons.help),
-                  title: new Text("Help"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
-                    );
-                  }),
-              new ListTile(
-                  leading: Icon(Icons.history),
-                  title: new Text("Order History "),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OrderHistoryPage()),
-                    );
-                  }),
-              new ListTile(
-                  leading: Icon(Icons.power_settings_new),
-                  title: new Text(
-                    "Logout",
-                    style:
-                        new TextStyle(color: Colors.redAccent, fontSize: 17.0),
-                  ),
-                  onTap: () {
-                    FirebaseAuth.instance
-                        .signOut()
-                        .then((result) =>
-                            Navigator.pushReplacementNamed(context, "/login"))
-                        .catchError((err) => print(err));
-                  })
-            ],
-          ),
-        ),
-        appBar: AppBar(
-          title: Text(widget.title),
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'List'),
-              Tab(
-                text: 'Map',
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            ProductsList(),
-            Icon(Icons.map),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          label: Text('Create Product'),
-          icon: Icon(Icons.add),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddProductPage()),
-            );
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      ), //
-    );
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.endFloat,
+            ), //
+          );
+        });
   }
 }
 
