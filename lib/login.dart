@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> loginForm = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> scaffoldState = GlobalKey<ScaffoldState>();
   TextEditingController emailInputController = TextEditingController();
   TextEditingController passwordInputController = TextEditingController();
   bool showLoading = false;
@@ -52,14 +53,28 @@ class LoginPageState extends State<LoginPage> {
       switch (e.code) {
         case 'ERROR_USER_NOT_FOUND':
           // user is not found , maybe they should register
+          scaffoldState.currentState
+              .showSnackBar(SnackBar(content: Text('Email is not registered')));
           break;
 
         case 'ERROR_WRONG_PASSWORD':
           // wrong password
+          scaffoldState.currentState
+              .showSnackBar(SnackBar(content: Text('Wrong password')));
+          break;
+
+        case 'ERROR_TOO_MANY_REQUESTS':
+          // too many failed attempts
+          // we can include a recaptacha
+          scaffoldState.currentState.showSnackBar(SnackBar(
+              content: Text(
+                  'We have blocked all requests from this device due to unusual activity. Try again later')));
           break;
 
         default:
-        // show something went wrong
+          // show something went wrong
+          scaffoldState.currentState
+              .showSnackBar(SnackBar(content: Text('Something went wrong')));
       }
       setState(() {
         // show loading
@@ -125,6 +140,7 @@ class LoginPageState extends State<LoginPage> {
     }
 
     return Scaffold(
+        key: scaffoldState,
         appBar: AppBar(
           title: Text("Login"),
         ),

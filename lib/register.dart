@@ -14,6 +14,7 @@ class RegisterPage extends StatefulWidget {
 
 class RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> registerForm = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> scaffoldState = GlobalKey<ScaffoldState>();
   TextEditingController firstNameInputController = TextEditingController();
   TextEditingController lastNameInputController = TextEditingController();
   TextEditingController emailInputController = TextEditingController();
@@ -95,8 +96,12 @@ class RegisterPageState extends State<RegisterPage> {
         case 'ERROR_EMAIL_ALREADY_IN_USE':
           // user is already registered,
           // maybe take them to login page?
+          scaffoldState.currentState.showSnackBar(
+              SnackBar(content: Text('Email is already registered')));
           break;
         default:
+          scaffoldState.currentState
+              .showSnackBar(SnackBar(content: Text('Something went wrong')));
         // show something went wrong
       }
       setState(() {
@@ -196,6 +201,7 @@ class RegisterPageState extends State<RegisterPage> {
     }
 
     return Scaffold(
+        key: scaffoldState,
         appBar: AppBar(
           title: Text("Register"),
         ),
