@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'home.dart';
@@ -12,85 +12,104 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
-  TextEditingController emailInputController;
-  TextEditingController pwdInputController;
+  final GlobalKey<FormState> loginForm = GlobalKey<FormState>();
+  TextEditingController emailInputController = TextEditingController();
+  TextEditingController passwordInputController = TextEditingController();
+  bool showLoading = false;
+  RegExp regex = new RegExp(
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
 
-  @override
-  initState() {
-    emailInputController = new TextEditingController();
-    pwdInputController = new TextEditingController();
-    super.initState();
-  }
+  /// Checks if the login form is valid
+  /// updates state to show loading
+  /// calls firebase to authenticate
+  /// if successful, navaigates to home
+  signInWithEmailAndPassword() async {
+    try {
+      // check that the form is valid
+      if (loginForm.currentState.validate()) {
+        setState(() {
+          // show loading
+          showLoading = true;
+        });
+        // login
+        AuthResult result = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: emailInputController.text,
+                password: passwordInputController.text);
 
-  String emailValidator(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Email format is invalid';
-    } else {
-      return null;
-    }
-  }
+        // take user to home if logged in
+        if (result.user != null) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage(
+                        title: "Apps Factory",
+                        uid: result.user.uid,
+                      )));
+        }
+      }
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case 'ERROR_USER_NOT_FOUND':
+          // user is not found , maybe they should register
+          break;
 
-  String pwdValidator(String value) {
-    if (value.length < 8) {
-      return 'Password must be longer than 8 characters';
-    } else {
-      return null;
+        case 'ERROR_WRONG_PASSWORD':
+          // wrong password
+          break;
+
+        default:
+        // show something went wrong
+      }
+      setState(() {
+        // show loading
+        showLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Login"),
-        ),
-        body: Container(
-            padding: const EdgeInsets.all(20.0),
+    getBody() {
+      if (showLoading) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        return Container(
+            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
             child: SingleChildScrollView(
                 child: Form(
-              key: _loginFormKey,
+              key: loginForm,
               child: Column(
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Email'),
                     controller: emailInputController,
                     keyboardType: TextInputType.emailAddress,
-                    validator: emailValidator,
+                    validator: (value) {
+                      if (!regex.hasMatch(value)) {
+                        return 'Email format is invalid';
+                      } else {
+                        return null;
+                      }
+                    },
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Password'),
-                    controller: pwdInputController,
+                    controller: passwordInputController,
                     obscureText: true,
-                    validator: pwdValidator,
+                    validator: (value) {
+                      if (value.length < 8) {
+                        return 'Password must be longer than 8 characters';
+                      } else {
+                        return null;
+                      }
+                    },
                   ),
                   RaisedButton(
                     child: Text("Login"),
-                    onPressed: () {
-                      if (_loginFormKey.currentState.validate()) {
-                        FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                                email: emailInputController.text,
-                                password: pwdInputController.text)
-                            .then((currentUser) => Firestore.instance
-                                .collection("users")
-                                .document(currentUser.user.uid)
-                                .get()
-                                .then((DocumentSnapshot result) =>
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                                  title: "Apps Factory",
-                                                  uid: currentUser.user.uid,
-                                                ))))
-                                .catchError((err) => print(err)))
-                            .catchError((err) => print(err));
-                      }
-                    },
+                    onPressed: signInWithEmailAndPassword,
                   ),
                   Text("Don't have an account yet?"),
                   FlatButton(
@@ -101,6 +120,14 @@ class LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
-            ))));
+            )));
+      }
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Login"),
+        ),
+        body: getBody());
   }
 }

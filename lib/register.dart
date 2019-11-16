@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,53 +13,112 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterPageState extends State<RegisterPage> {
-  final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
-  TextEditingController firstNameInputController;
-  TextEditingController lastNameInputController;
-  TextEditingController emailInputController;
-  TextEditingController pwdInputController;
-  TextEditingController confirmPwdInputController;
+  final GlobalKey<FormState> registerForm = GlobalKey<FormState>();
+  TextEditingController firstNameInputController = TextEditingController();
+  TextEditingController lastNameInputController = TextEditingController();
+  TextEditingController emailInputController = TextEditingController();
+  TextEditingController passwordInputController = TextEditingController();
+  TextEditingController confirmPasswordInputController =
+      TextEditingController();
+  RegExp emailRegularExpression = new RegExp(
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+  bool showLoading = false;
 
   @override
   initState() {
-    firstNameInputController = new TextEditingController();
-    lastNameInputController = new TextEditingController();
-    emailInputController = new TextEditingController();
-    pwdInputController = new TextEditingController();
-    confirmPwdInputController = new TextEditingController();
     super.initState();
   }
 
-  String emailValidator(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Email format is invalid';
-    } else {
-      return null;
-    }
-  }
+/**
+ * Checks if form is valid,
+ * checks if both passwords match
+ */
+  createUserWithEmailAndPassword() async {
+    try {
+      // validate register form
+      if (registerForm.currentState.validate()) {
+        // check that both passwords match
+        if (passwordInputController.text ==
+            confirmPasswordInputController.text) {
+          setState(() {
+            showLoading = true;
+          });
 
-  String pwdValidator(String value) {
-    if (value.length < 8) {
-      return 'Password must be longer than 8 characters';
-    } else {
-      return null;
+          // call firefabase
+          AuthResult result = await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+                  email: emailInputController.text,
+                  password: passwordInputController.text);
+
+          // create a user record
+          if (result.user != null) {
+            await Firestore.instance
+                .collection("users")
+                .document(result.user.uid)
+                .setData({
+              "firstName": firstNameInputController.text,
+              "lastName": lastNameInputController.text,
+              "email": emailInputController.text,
+            });
+
+            // take user to home
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => HomePage(
+                          title: 'App',
+                          uid: result.user.uid,
+                        )),
+                (_) => false);
+          }
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Error"),
+                  content: Text("The passwords do not match"),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              });
+        }
+      }
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
+          // user is already registered,
+          // maybe take them to login page?
+          break;
+        default:
+        // show something went wrong
+      }
+      setState(() {
+        // show loading
+        showLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Register"),
-        ),
-        body: Container(
-            padding: const EdgeInsets.all(20.0),
+    getBody() {
+      if (showLoading) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        return Container(
+            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
             child: SingleChildScrollView(
                 child: Form(
-              key: _registerFormKey,
+              key: registerForm,
               child: Column(
                 children: <Widget>[
                   TextFormField(
@@ -67,6 +127,8 @@ class RegisterPageState extends State<RegisterPage> {
                     validator: (value) {
                       if (value.length < 3) {
                         return "Please enter a valid first name.";
+                      } else {
+                        return null;
                       }
                     },
                   ),
@@ -76,83 +138,49 @@ class RegisterPageState extends State<RegisterPage> {
                       validator: (value) {
                         if (value.length < 3) {
                           return "Please enter a valid last name.";
+                        } else {
+                          return null;
                         }
                       }),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Email'),
                     controller: emailInputController,
                     keyboardType: TextInputType.emailAddress,
-                    validator: emailValidator,
+                    validator: (value) {
+                      if (!emailRegularExpression.hasMatch(value)) {
+                        return 'Email format is invalid';
+                      } else {
+                        return null;
+                      }
+                    },
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Password'),
-                    controller: pwdInputController,
+                    controller: passwordInputController,
                     obscureText: true,
-                    validator: pwdValidator,
+                    validator: (value) {
+                      if (value.length < 8) {
+                        return 'Password must be longer than 8 characters';
+                      } else {
+                        return null;
+                      }
+                    },
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Confirm Password'),
-                    controller: confirmPwdInputController,
+                    controller: confirmPasswordInputController,
                     obscureText: true,
-                    validator: pwdValidator,
+                    validator: (value) {
+                      if (value.length < 8) {
+                        return 'Password must be longer than 8 characters';
+                      } else {
+                        return null;
+                      }
+                    },
                   ),
                   RaisedButton(
                     child: Text("Register"),
-                    onPressed: () {
-                      if (_registerFormKey.currentState.validate()) {
-                        if (pwdInputController.text ==
-                            confirmPwdInputController.text) {
-                          FirebaseAuth.instance
-                              // create firebase user
-                              .createUserWithEmailAndPassword(
-                                  email: emailInputController.text,
-                                  password: pwdInputController.text)
-                              // create user record
-                              .then((currentUser) => Firestore.instance
-                                  .collection("users")
-                                  .document(currentUser.user.uid)
-                                  .setData({
-                                    "firstName": firstNameInputController.text,
-                                    "lastName": lastNameInputController.text,
-                                    "email": emailInputController.text,
-                                  })
-                                  .then((result) => {
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => HomePage(
-                                                      title: 'App',
-                                                      uid: currentUser.user.uid,
-                                                    )),
-                                            (_) => false),
-                                        firstNameInputController.clear(),
-                                        lastNameInputController.clear(),
-                                        emailInputController.clear(),
-                                        pwdInputController.clear(),
-                                        confirmPwdInputController.clear()
-                                      })
-                                  .catchError((err) => print(err)))
-                              .catchError((err) => print(err));
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Error"),
-                                  content: Text("The passwords do not match"),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text("Close"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                );
-                              });
-                        }
-                      }
-                    },
+                    onPressed: createUserWithEmailAndPassword,
                   ),
                   Text("Already have an account?"),
                   FlatButton(
@@ -163,6 +191,14 @@ class RegisterPageState extends State<RegisterPage> {
                   )
                 ],
               ),
-            ))));
+            )));
+      }
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Register"),
+        ),
+        body: getBody());
   }
 }
