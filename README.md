@@ -10,6 +10,13 @@ A new Flutter project.
 * Download the generated `google-services.json` from firebase project and place it inside `android/app`. 
 * `flutter run`
 
+
+## Features
+
+* Login
+* Registration
+* Fully Working CRUD example
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
