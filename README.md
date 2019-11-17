@@ -5,11 +5,15 @@ I am avaialble for business and knowledge sharing. Hit me up
 
 ps: This code base is clean as and it gets cleaner by the day
 ## Some Screenshots
+<div>
 <img src="https://imgur.com/ZASwk0x.jpg" alt="Login" width="200"/>
 <img src="https://imgur.com/4TJK8LH.jpg" alt="Register" width="200"/>
 <img src="https://imgur.com/ApX2iB9.jpg" alt="Home" width="200"/>
+</div>
+<div>
 <img src="https://imgur.com/s41c9qU.jpg" alt="Create Crud" width="200"/>
 <img src="https://imgur.com/Vre3Mxb.jpg" alt="App Drawer" width="200"/>
+</div> 
 
 
 ## Getting Started
