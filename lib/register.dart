@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -67,7 +68,6 @@ class RegisterPageState extends State<RegisterPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => HomePage(
-                          title: 'App',
                           uid: result.user.uid,
                         )),
                 (_) => false);
@@ -94,15 +94,20 @@ class RegisterPageState extends State<RegisterPage> {
     } on PlatformException catch (e) {
       switch (e.code) {
         case 'ERROR_EMAIL_ALREADY_IN_USE':
-          // user is already registered,
-          // maybe take them to login page?
-          scaffoldState.currentState.showSnackBar(
-              SnackBar(content: Text('Email is already registered')));
+          Flushbar(
+                  title: "Email already registered",
+                  message: emailInputController.text +
+                      " Email is already registered",
+                  duration: Duration(seconds: 3))
+              .show(context);
           break;
         default:
-          scaffoldState.currentState
-              .showSnackBar(SnackBar(content: Text('Something went wrong')));
-        // show something went wrong
+          Flushbar(
+                  title: "Error",
+                  message: emailInputController.text +
+                      "Something went wrong and we dont know what",
+                  duration: Duration(seconds: 3))
+              .show(context);
       }
       setState(() {
         // show loading

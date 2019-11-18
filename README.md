@@ -29,7 +29,7 @@ ps: This code base is clean as and it gets cleaner by the day
 
 * Login
 * Registration
-* Fully Working CRUD example
+* Fully Working CRUD example(USing the Provider + Firebase state managment)
 
 This project is a starting point for a Flutter application.
 

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import 'create-product.dart';
 import 'main.dart';
+import 'userRepository.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title, this.uid}) : super(key: key);
+  HomePage({Key key, this.uid}) : super(key: key);
 
-  final String title;
   final String uid;
 
   @override
@@ -102,18 +103,14 @@ class HomePageState extends State<HomePage> {
                           style: new TextStyle(
                               color: Colors.redAccent, fontSize: 17.0),
                         ),
-                        onTap: () {
-                          FirebaseAuth.instance
-                              .signOut()
-                              .then((result) => Navigator.pushReplacementNamed(
-                                  context, "/login"))
-                              .catchError((err) => print(err));
-                        })
+                        onTap: () =>
+                            Provider.of<UserRepository>(context).signOut())
                   ],
                 ),
               ),
               appBar: AppBar(
-                title: Text(widget.title),
+                title: Text("KiwiLocal"),
+                centerTitle: true,
                 bottom: TabBar(
                   tabs: [
                     Tab(text: 'List'),
@@ -145,5 +142,31 @@ class HomePageState extends State<HomePage> {
             ), //
           );
         });
+  }
+}
+
+class UserInfoPage extends StatelessWidget {
+  final FirebaseUser user;
+
+  const UserInfoPage({Key key, this.user}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("User Info"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(user.email),
+            RaisedButton(
+              child: Text("SIGN OUT"),
+              onPressed: () => Provider.of<UserRepository>(context).signOut(),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
