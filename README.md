@@ -1,6 +1,8 @@
-# app
+# Flutter Demo
 
-Fully working firebase Flutty App with authentication and crud
+Fully working firebase Flutter app with authentication and CRUD.
+Instructions and tests are only done on Android at the moment,
+as I dont own a mac or iphone.
 I am avaialble for business and knowledge sharing. Hit me up
 
 ps: This code base is clean as and it gets cleaner by the day
@@ -31,13 +33,28 @@ ps: This code base is clean as and it gets cleaner by the day
 * Registration
 * Fully Working CRUD example(USing the Provider + Firebase state managment)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+# Publishing(Deploying to palystore and ios store)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+This app , This exact repo is published to google paly store , not ios store yet. 
+IF you want to publish, then make sure you follow these instructions
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Android 
+You need to sign your app first of all
+### Signing the app
+Create a key 
+
+`keytool -genkey -v -keystore c:/path/to/your/key.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias key
+`
+
+Open and update `\android\key.properties` file values
+
+Build an app bundle
+`flutter build appbundle`
+
+
+Now you can upload your app bundle to playstore after you pay play store developer regisreration fee. Cost $25 US dollars
+For more information you can check out this [Guide](https://flutter.dev/docs/deployment/android)
+
+## IOS 
+Coming SOON! inshallah 
