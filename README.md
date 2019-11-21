@@ -36,8 +36,8 @@ ps: This code base is clean as and it gets cleaner by the day
 
 # Publishing(Deploying to palystore and ios store)
 
-This app , This exact repo is published to google paly store , not ios store yet. 
-IF you want to publish, then make sure you follow these instructions
+This app , This exact repo is published to google paly store if you search for `Flutter demo by mustafa`, not ios store yet. 
+IF you want to use this project as your starting point project and makes changes to, then i say choice! and here are thee instructions for you to make it visible to world.
 
 ## Android 
 You need to sign your app first of all
@@ -56,5 +56,9 @@ Build an app bundle
 Now you can upload your app bundle to playstore after you pay play store developer regisreration fee. Cost $25 US dollars
 For more information you can check out this [Guide](https://flutter.dev/docs/deployment/android)
 
+### TIPS 
+#### Change the app name 
+Open `/android/app/src/main/AndroidManifest.xml`
+Edit `android:label` . Set the name to whatever you feel like
 ## IOS 
 Coming SOON! inshallah 
