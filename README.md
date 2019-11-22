@@ -52,7 +52,20 @@ Open and update `\android\key.properties` file values
 Build an app bundle
 `flutter build appbundle`
 
+IF successfully built, you will get a file `build\app\outputs\bundle\release\app.aab`
 
+You should test your app bundle before deploying to play store
+
+download bundletool from the GitHub repository.
+
+`java -jar bundletool-all-0.11.0.jar build-apks --bundle=/MyApp/my_app.aab --output=/MyApp/my_app.apks --ks=/MyApp/keystore.jks--ks-pass=file:/MyApp/keystore.pwd--ks-key-alias=MyKeyAlias --key-pass=file:/MyApp/key.pwd`
+
+Generate a set of APKs from your app bundle.
+Deploy the APKs to connected devices.
+`bundletool install-apks --apks=/MyApp/my_app.apks`
+
+If your apk from your bundle works. then you are production ready.
+This repo already adds progaurd for you.s
 Now you can upload your app bundle to playstore after you pay play store developer regisreration fee. Cost $25 US dollars
 For more information you can check out this [Guide](https://flutter.dev/docs/deployment/android)
 
