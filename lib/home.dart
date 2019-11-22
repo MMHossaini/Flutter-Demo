@@ -110,7 +110,7 @@ class HomePageState extends State<HomePage> {
                 ),
               ),
               appBar: AppBar(
-                title: Text("KiwiLocal"),
+                title: Text("Flutter Demo"),
                 centerTitle: true,
                 bottom: TabBar(
                   tabs: [
