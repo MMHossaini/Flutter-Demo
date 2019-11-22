@@ -74,5 +74,11 @@ For more information you can check out this [Guide](https://flutter.dev/docs/dep
 #### Change the app name 
 Open `/android/app/src/main/AndroidManifest.xml`
 Edit `android:label` . Set the name to whatever you feel like
+
+#### Versioning
+Everytime you upload new version to play store make sure to update the version code, otherwise paly store will complain
+[more information here](https://stackoverflow.com/a/56970752/889376)
+<img src="https://imgur.com/KbSIa13.jpg"/>
+
 ## IOS 
 Coming SOON! inshallah 
