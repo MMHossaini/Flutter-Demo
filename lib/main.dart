@@ -7,6 +7,7 @@ import 'login.dart';
 import 'register.dart';
 import 'splashscreen.dart';
 import 'userRepository.dart';
+import 'forgot-password.dart';
 
 void main() => runApp(App());
 
@@ -15,7 +16,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Maz Market',
+        title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
@@ -24,6 +25,7 @@ class App extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext context) => LoginPage(),
           '/register': (BuildContext context) => RegisterPage(),
+          '/forgot-password': (BuildContext context) => ForgotPasswordPage(),
         });
   }
 }

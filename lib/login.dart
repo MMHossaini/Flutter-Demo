@@ -129,6 +129,12 @@ class LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   Navigator.pushNamed(context, "/register");
                 },
+              ),
+              FlatButton(
+                child: Text("Forgot your password"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/forgot-password");
+                },
               )
             ],
           ),
