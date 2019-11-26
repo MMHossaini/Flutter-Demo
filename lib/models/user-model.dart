@@ -24,12 +24,16 @@ class User {
   }
 
   factory User.fromJson(Map<String, Object> doc) {
-    User user = new User(
-      userID: doc['userID'],
-      firstName: doc['firstName'],
-      email: doc['email'],
-      profilePictureURL: doc['profilePictureURL'],
-    );
+    User user = null;
+
+    if (doc != null) {
+      user = new User(
+        userID: doc['userID'],
+        firstName: doc['firstName'],
+        email: doc['email'],
+        profilePictureURL: doc['profilePictureURL'],
+      );
+    }
     return user;
   }
 

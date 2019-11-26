@@ -1,9 +1,12 @@
+import 'package:app/ui/screens/create-product.dart';
+import 'package:app/ui/screens/my-orders.dart';
+import 'package:app/ui/screens/profile.dart';
+import 'package:app/ui/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'create-product.dart';
 import 'main.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,8 +22,8 @@ class HomePageState extends State<HomePage> {
   FirebaseUser currentUser;
   @override
   initState() {
-    this.getCurrentUser();
     super.initState();
+    this.getCurrentUser();
   }
 
   void getCurrentUser() async {

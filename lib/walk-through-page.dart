@@ -28,6 +28,7 @@ class WalkThroughPage extends StatefulWidget {
             child: RaisedButton(
               child: new Text("Login"),
               onPressed: () {
+                preferences.setBool('seen', true);
                 navigatorKey.currentState.pushNamed('/login');
               },
             ),
@@ -37,6 +38,8 @@ class WalkThroughPage extends StatefulWidget {
             child: RaisedButton(
               child: new Text("Register"),
               onPressed: () {
+                preferences.setBool('seen', true);
+
                 navigatorKey.currentState.pushNamed('/register');
               },
             ),

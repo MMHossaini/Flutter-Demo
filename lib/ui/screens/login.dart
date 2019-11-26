@@ -1,11 +1,11 @@
+import 'package:app/utils/validator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flushbar/flushbar.dart';
 
-import 'models/user-model.dart';
-import 'utils/validator.dart';
+import 'package:app/models/user-model.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -159,6 +159,10 @@ class LoginPageState extends State<LoginPage> {
                                       duration: Duration(seconds: 3))
                                   .show(context);
                           }
+
+                          setState(() {
+                            showLoading = false;
+                          });
                         }
                       }
                     },

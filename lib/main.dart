@@ -1,19 +1,25 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:app/ui/screens/product.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'create-account-page.dart';
-import 'home.dart';
-import 'login.dart';
-import 'models/user-model.dart';
-import 'register.dart';
-import 'forgot-password.dart';
-import 'verify-account-page.dart';
+import 'ui/screens/forgot-password.dart';
+import 'ui/screens/login.dart';
+import 'ui/screens/register.dart';
 import 'walk-through-page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+// Some notes on how we handle authentication ============
+// we use a key,
+// the first time a user comes into the app, we show the walk through page
+// when they click get started on the walk through page we set the key to true
+// so next time they load the app, we take them straight to the welcome page
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
-void main() => runApp(App());
+SharedPreferences preferences;
+Future<Null> main() async {
+  preferences = await SharedPreferences.getInstance();
+  runApp(App());
+}
 
 class App extends StatelessWidget {
   // This widget is the root of your application.
@@ -25,172 +31,23 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: StreamBuilder<FirebaseUser>(
-          stream: FirebaseAuth.instance.onAuthStateChanged,
-          builder:
-              (BuildContext context, AsyncSnapshot<FirebaseUser> firebaseUser) {
-            if (firebaseUser.connectionState == ConnectionState.active) {
-              if (firebaseUser.hasData) {
-                // logged in using email and password
-                return firebaseUser.data.isEmailVerified
-                    ? HomePage(
-                        uid: firebaseUser.data.uid,
-                      )
-                    : VerifyAccountPage();
-              } else {
-                return WalkThroughPage();
-              }
-            } else {
-              return Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
-        ),
         debugShowCheckedModeBanner: false,
+        home: getFirstScreen(),
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext context) => LoginPage(),
           '/register': (BuildContext context) => RegisterPage(),
           '/forgot-password': (BuildContext context) => ForgotPasswordPage(),
           '/create-account': (BuildContext context) => CreateAccountPage(),
-          '/verify-account': (BuildContext context) => VerifyAccountPage(),
         });
   }
 
-  Future<User> getUserRecord(String userId) async {
-    var document =
-        Firestore.instance.collection("users").document(userId).get();
-    return await document.then((doc) {
-      return User.fromDocument(doc);
-    });
-  }
-}
-
-class SettingsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Settings"),
-      ),
-      body: ListView(children: <Widget>[
-        ListTile(
-          title: Text('Enable Feature'),
-          trailing: Checkbox(
-            onChanged: (val) {},
-            value: false,
-          ),
-          onTap: () {},
-        )
-      ]),
-    );
-  }
-}
-
-class ProductCreateOrEditPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Settings"),
-      ),
-      body: ListView(children: <Widget>[
-        ListTile(
-          title: Text('Enable Feature'),
-          trailing: Checkbox(
-            onChanged: (val) {},
-            value: false,
-          ),
-          onTap: () {},
-        )
-      ]),
-    );
-  }
-}
-
-class ProductDetailsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Settings"),
-      ),
-      body: ListView(children: <Widget>[
-        ListTile(
-          title: Text('Enable Feature'),
-          trailing: Checkbox(
-            onChanged: (val) {},
-            value: false,
-          ),
-          onTap: () {},
-        )
-      ]),
-    );
-  }
-}
-
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile"),
-      ),
-      body: ListView(children: <Widget>[
-        ListTile(
-          title: Text('Enable Feature'),
-          trailing: Checkbox(
-            onChanged: (val) {},
-            value: false,
-          ),
-          onTap: () {},
-        )
-      ]),
-    );
-  }
-}
-
-class HelpPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Help"),
-      ),
-      body: ListView(children: <Widget>[
-        ListTile(
-          title: Text('Enable Feature'),
-          trailing: Checkbox(
-            onChanged: (val) {},
-            value: false,
-          ),
-          onTap: () {},
-        )
-      ]),
-    );
-  }
-}
-
-class OrderHistoryPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Orders"),
-      ),
-      body: ListView(children: <Widget>[
-        ListTile(
-          title: Text('Enable Feature'),
-          trailing: Checkbox(
-            onChanged: (val) {},
-            value: false,
-          ),
-          onTap: () {},
-        )
-      ]),
-    );
+  Widget getFirstScreen() {
+    bool seen = (preferences.getBool('seen') ?? false);
+    if (seen) {
+      return new LoginPage();
+    } else {
+      return new WalkThroughPage();
+    }
   }
 }
 
@@ -225,29 +82,6 @@ class ProductsList extends StatelessWidget {
             );
         }
       },
-    );
-  }
-}
-
-class ProductDetailPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Product Detail"),
-      ),
-      body: Column(
-        children: <Widget>[
-          RaisedButton(
-            child: Text('Buy now'),
-            onPressed: () {},
-          ),
-          FlatButton(
-            child: Text('Add to cart'),
-            onPressed: () {},
-          )
-        ],
-      ),
     );
   }
 }
