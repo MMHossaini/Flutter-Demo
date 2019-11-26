@@ -1,13 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 
+import 'create-account-page.dart';
 import 'home.dart';
 import 'login.dart';
+import 'models/user-model.dart';
 import 'register.dart';
-import 'splashscreen.dart';
-import 'userRepository.dart';
 import 'forgot-password.dart';
+import 'verify-account-page.dart';
+import 'walk-through-page.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() => runApp(App());
 
@@ -17,40 +21,50 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
+        navigatorKey: navigatorKey,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: FirstPage(),
+        home: StreamBuilder<FirebaseUser>(
+          stream: FirebaseAuth.instance.onAuthStateChanged,
+          builder:
+              (BuildContext context, AsyncSnapshot<FirebaseUser> firebaseUser) {
+            if (firebaseUser.connectionState == ConnectionState.active) {
+              if (firebaseUser.hasData) {
+                // logged in using email and password
+                return firebaseUser.data.isEmailVerified
+                    ? HomePage(
+                        uid: firebaseUser.data.uid,
+                      )
+                    : VerifyAccountPage();
+              } else {
+                return WalkThroughPage();
+              }
+            } else {
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
+        ),
         debugShowCheckedModeBanner: false,
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext context) => LoginPage(),
           '/register': (BuildContext context) => RegisterPage(),
           '/forgot-password': (BuildContext context) => ForgotPasswordPage(),
+          '/create-account': (BuildContext context) => CreateAccountPage(),
+          '/verify-account': (BuildContext context) => VerifyAccountPage(),
         });
   }
-}
 
-class FirstPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      builder: (_) => UserRepository.instance(),
-      child: Consumer(
-        builder: (context, UserRepository user, _) {
-          switch (user.status) {
-            case Status.Uninitialized:
-              return SplashPage();
-            case Status.Unauthenticated:
-            case Status.Authenticating:
-              return LoginPage();
-            case Status.Authenticated:
-              return HomePage(
-                uid: user.user.uid,
-              );
-          }
-        },
-      ),
-    );
+  Future<User> getUserRecord(String userId) async {
+    var document =
+        Firestore.instance.collection("users").document(userId).get();
+    return await document.then((doc) {
+      return User.fromDocument(doc);
+    });
   }
 }
 
