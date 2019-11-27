@@ -1,5 +1,6 @@
 import 'package:app/ui/screens/create-product.dart';
 import 'package:app/ui/screens/my-orders.dart';
+import 'package:app/ui/screens/product.dart';
 import 'package:app/ui/screens/profile.dart';
 import 'package:app/ui/screens/settings.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'main.dart';
+import '../../main.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.uid}) : super(key: key);
@@ -105,7 +106,11 @@ class HomePageState extends State<HomePage> {
                           style: new TextStyle(
                               color: Colors.redAccent, fontSize: 17.0),
                         ),
-                        onTap: () => FirebaseAuth.instance.signOut())
+                        onTap: () async {
+                          await FirebaseAuth.instance.signOut();
+                          navigatorKey.currentState.pushNamedAndRemoveUntil(
+                              '/login', (Route<dynamic> route) => false);
+                        })
                   ],
                 ),
               ),
@@ -151,5 +156,40 @@ class HomePageState extends State<HomePage> {
             ), //
           );
         });
+  }
+}
+
+class ProductsList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('products').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return new Center(
+              child: new CircularProgressIndicator(),
+            );
+          default:
+            return new ListView(
+              children:
+                  snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  title: new Text(document['title']),
+                  subtitle: new Text(document['description']),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProductDetailPage()),
+                    );
+                  },
+                );
+              }).toList(),
+            );
+        }
+      },
+    );
   }
 }
