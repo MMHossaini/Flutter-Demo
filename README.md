@@ -37,11 +37,18 @@ ps: This code base is clean as and it gets cleaner by the day
 
 # Publishing(Deploying to palystore and ios store)
 
-This app , This exact repo is published to google paly store if you search for `Flutter demo by mustafa`, not ios store yet. 
+This app , This exact repo is published to google paly store if you search for `Apps Factory`, not ios store yet. 
 IF you want to use this project as your starting point project and makes changes to, then i say choice! and here are thee instructions for you to make it visible to world.
 
 ## Android 
 You need to sign your app first of all
+
+### icon
+Set the path to your app icon in `pubspec.yaml flutter_icons: image_path: <yourAppIconPathHere>`
+
+Now run `flutter pub run flutter_launcher_icons:main`
+This will replace all the default flutter app icons in your app to your new image, you can check this into your repo but i have not because i want you to really try it your self. when this project was first created with `flutter create app` it came with default icons and this repository contains the default icons. I also update the icon when i deploy my app to playstore. 
+
 ### Signing the app
 Create a key 
 

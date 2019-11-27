@@ -1,8 +1,7 @@
+import 'package:app/main.dart';
+import 'package:app/models/walk-through-model.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_swiper/flutter_swiper.dart";
-
-import 'main.dart';
-import 'models/walk-through-model.dart';
 
 class WalkThroughPage extends StatefulWidget {
   final List<WalkThrough> pages = [
@@ -26,24 +25,14 @@ class WalkThroughPage extends StatefulWidget {
           SizedBox(
             width: double.maxFinite,
             child: RaisedButton(
-              child: new Text("Login"),
+              child: new Text("Get Started"),
               onPressed: () {
                 preferences.setBool('seen', true);
-                navigatorKey.currentState.pushNamed('/login');
+                navigatorKey.currentState.pushNamedAndRemoveUntil(
+                    '/login', (Route<dynamic> route) => false);
               },
             ),
           ),
-          SizedBox(
-            width: double.maxFinite,
-            child: RaisedButton(
-              child: new Text("Register"),
-              onPressed: () {
-                preferences.setBool('seen', true);
-
-                navigatorKey.currentState.pushNamed('/register');
-              },
-            ),
-          )
         ],
       ),
       icon: Icons.web,

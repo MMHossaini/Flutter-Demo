@@ -7,6 +7,8 @@ import 'package:flushbar/flushbar.dart';
 
 import 'package:app/models/user-model.dart';
 
+import 'home.dart';
+
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
@@ -93,25 +95,13 @@ class LoginPageState extends State<LoginPage> {
                                   email: emailInputController.text,
                                   password: passwordInputController.text);
 
-                          // check if user has email verified
-                          if (!result.user.isEmailVerified) {
-                            // send vertification email
-                            await result.user.sendEmailVerification();
-
-                            return Navigator.pushNamed(
-                                context, "/verify-account");
-                          }
-
-                          // check if we have user record, take to user record page else home
-
-                          User userRecord =
-                              await widget.getUserRecord(result.user.uid);
-
-                          if (userRecord == null) {
-                            // take to create account
-                            return Navigator.pushNamed(
-                                context, "/create-account");
-                          }
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                        uid: result.user.uid,
+                                      )),
+                              (_) => false);
 
                           setState(() {
                             showLoading = false;
