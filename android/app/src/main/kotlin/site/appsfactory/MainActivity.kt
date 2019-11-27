@@ -1,4 +1,4 @@
-package site.appsfactory.flutter.demo
+package site.appsfactory
 
 import android.os.Bundle
 

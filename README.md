@@ -37,7 +37,7 @@ ps: This code base is clean as and it gets cleaner by the day
 
 # Publishing(Deploying to palystore and ios store)
 
-This app , This exact repo is published to google paly store if you search for `Flutter demo by mustafa`, not ios store yet. 
+This app , This exact repo is published to google paly store if you search for `Apps Factory`, not ios store yet. 
 IF you want to use this project as your starting point project and makes changes to, then i say choice! and here are thee instructions for you to make it visible to world.
 
 ## Android 
