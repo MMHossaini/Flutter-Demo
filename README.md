@@ -42,6 +42,13 @@ IF you want to use this project as your starting point project and makes changes
 
 ## Android 
 You need to sign your app first of all
+
+### icon
+Set the path to your app icon in `pubspec.yaml flutter_icons: image_path: <yourAppIconPathHere>`
+
+Now run `flutter pub run flutter_launcher_icons:main`
+This will replace all the default flutter app icons in your app to your new image, you can check this into your repo but i have not because i want you to really try it your self. when this project was first created with `flutter create app` it came with default icons and this repository contains the default icons. I also update the icon when i deploy my app to playstore. 
+
 ### Signing the app
 Create a key 
 
