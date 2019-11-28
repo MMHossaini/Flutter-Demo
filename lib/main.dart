@@ -1,3 +1,4 @@
+import 'package:app/ui/screens/error-screen.dart';
 import 'package:app/ui/screens/home.dart';
 import 'package:app/ui/screens/walk-through-page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,7 +32,16 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,        
+        builder: (BuildContext context, Widget widget) {
+          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+            return ErrorScreen(
+              errorDetails: errorDetails,
+            );
+          };
+
+          return widget;
+        },
         home: getFirstScreen(),
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext context) => LoginPage(),

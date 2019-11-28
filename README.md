@@ -32,7 +32,9 @@ ps: This code base is clean as and it gets cleaner by the day
 * Login
 * Registration
 * Reset Password
-* Fully Working CRUD example(USing the Provider + Firebase state managment)
+* Onboarding Page
+* Global error handler
+* Fully Working CRUD example
 
 
 # Publishing(Deploying to palystore and ios store)
