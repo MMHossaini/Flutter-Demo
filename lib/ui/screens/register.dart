@@ -1,3 +1,4 @@
+import 'package:app/main.dart';
 import 'package:app/ui/screens/home.dart';
 import 'package:app/utils/validator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -105,7 +106,8 @@ class RegisterPageState extends State<RegisterPage> {
                 padding: EdgeInsets.only(left: 16, right: 16),
                 child: TextFormField(
                   decoration: InputDecoration(
-                      labelText: 'Confirm password', prefixIcon: Icon(Icons.lock)),
+                      labelText: 'Confirm password',
+                      prefixIcon: Icon(Icons.lock)),
                   controller: confirmPasswordInputController,
                   obscureText: true,
                   validator: Validator.validatePassword,
@@ -154,6 +156,7 @@ class RegisterPageState extends State<RegisterPage> {
               .createUserWithEmailAndPassword(
                   email: emailInputController.text,
                   password: passwordInputController.text);
+          currentUser = result.user;
 
           // create user record
           await Firestore.instance
