@@ -79,6 +79,12 @@ class HomePageState extends State<HomePage> {
                           );
                         }),
                     new ListTile(
+                        leading: Icon(Icons.payment),
+                        title: new Text("Payment"),
+                        onTap: () {
+                          Navigator.pushNamed(context, '/payment');
+                        }),
+                    new ListTile(
                         leading: Icon(Icons.help),
                         title: new Text("Help"),
                         onTap: () {

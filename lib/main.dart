@@ -1,5 +1,6 @@
 import 'package:app/ui/screens/error-screen.dart';
 import 'package:app/ui/screens/home.dart';
+import 'package:app/ui/screens/payment-screen.dart';
 import 'package:app/ui/screens/walk-through-page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class App extends StatelessWidget {
           '/login': (BuildContext context) => LoginPage(),
           '/register': (BuildContext context) => RegisterPage(),
           '/forgot-password': (BuildContext context) => ForgotPasswordPage(),
+          '/payment': (BuildContext context) => PaymentScreen(),
         });
   }
 
