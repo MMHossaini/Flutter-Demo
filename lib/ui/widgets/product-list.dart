@@ -20,24 +20,26 @@ class ProductsList extends StatelessWidget {
               children:
                   snapshot.data.documents.map((DocumentSnapshot document) {
                 Product product = Product.fromDocument(document);
-                return ListTile(
-                  leading: ClipRect(
-                    child: Image.network(
-                      product.pictures[0],
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  trailing: Text(r"$" + product.cost.toString()),
-                  title: Text(product.title),
-                  subtitle: Text(product.shortDescription),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductScreen(product: product),
+                return Card(
+                  child: ListTile(
+                    leading: ClipRect(
+                      child: Image.network(
+                        product.pictures[0],
+                        fit: BoxFit.cover,
                       ),
-                    );
-                  },
+                    ),
+                    trailing: Text(r"$" + product.cost.toString()),
+                    title: Text(product.title),
+                    subtitle: Text(product.shortDescription),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductScreen(product: product),
+                        ),
+                      );
+                    },
+                  ),
                 );
               }).toList(),
             );
