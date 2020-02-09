@@ -128,7 +128,7 @@ class LoginPageState extends State<LoginPage> {
                             case 'ERROR_WRONG_PASSWORD':
                               Flushbar(
                                       title: "Wrong Password",
-                                      message: "Reset Password coming soon",
+                                      message: "Reset Password",
                                       duration: Duration(seconds: 3))
                                   .show(context);
                               break;
