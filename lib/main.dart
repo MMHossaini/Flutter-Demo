@@ -19,6 +19,7 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 FirebaseUser currentUser;
 SharedPreferences preferences;
 Future<Null> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   preferences = await SharedPreferences.getInstance();
   currentUser = await FirebaseAuth.instance.currentUser();
   runApp(App());
