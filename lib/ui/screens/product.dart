@@ -15,7 +15,18 @@ class ProductScreen extends StatelessWidget {
           centerTitle: true,
           title: Text(product.title),
         ),
-        body: Text(product.fullDescription),
+        body: Column(
+          children: <Widget>[
+            Hero(
+              child: Image.network(
+                product.pictures[0],
+                fit: BoxFit.cover,
+              ),
+              tag: 'dash' + product.documentId,
+            ),
+            Text(product.fullDescription),
+          ],
+        ),
         floatingActionButton: FloatingActionButton.extended(
           label: Text('Buy'),
           icon: Icon(Icons.shopping_cart),
@@ -23,7 +34,9 @@ class ProductScreen extends StatelessWidget {
             // create a new order
             Order newOrder = Order(null, 69, false, "test order",
                 product.documentId, product.cost * 45, currentUser.uid);
-            DocumentReference ref = await Firestore.instance.collection('orders').add(newOrder.toJson());
+            DocumentReference ref = await Firestore.instance
+                .collection('orders')
+                .add(newOrder.toJson());
           },
         ));
   }

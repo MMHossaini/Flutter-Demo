@@ -23,9 +23,12 @@ class ProductsList extends StatelessWidget {
                 return Card(
                   child: ListTile(
                     leading: ClipRect(
-                      child: Image.network(
-                        product.pictures[0],
-                        fit: BoxFit.cover,
+                      child: Hero(
+                        child: Image.network(
+                          product.pictures[0],
+                          fit: BoxFit.cover,
+                        ),
+                        tag: 'dash' + product.documentId,
                       ),
                     ),
                     trailing: Text(r"$" + product.cost.toString()),
