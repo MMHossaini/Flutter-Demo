@@ -1,3 +1,4 @@
+import 'package:app/main.dart';
 import 'package:app/utils/validator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -95,6 +96,7 @@ class LoginPageState extends State<LoginPage> {
                                   email: emailInputController.text,
                                   password: passwordInputController.text);
 
+                          currentUser = result.user;
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -126,7 +128,7 @@ class LoginPageState extends State<LoginPage> {
                             case 'ERROR_WRONG_PASSWORD':
                               Flushbar(
                                       title: "Wrong Password",
-                                      message: "Reset Password coming soon",
+                                      message: "Reset Password",
                                       duration: Duration(seconds: 3))
                                   .show(context);
                               break;

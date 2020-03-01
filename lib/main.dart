@@ -1,4 +1,6 @@
+import 'package:app/ui/screens/error-screen.dart';
 import 'package:app/ui/screens/home.dart';
+import 'package:app/ui/screens/payment-screen.dart';
 import 'package:app/ui/screens/walk-through-page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 FirebaseUser currentUser;
 SharedPreferences preferences;
 Future<Null> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   preferences = await SharedPreferences.getInstance();
   currentUser = await FirebaseAuth.instance.currentUser();
   runApp(App());
@@ -31,12 +34,22 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,        
+        builder: (BuildContext context, Widget widget) {
+          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+            return ErrorScreen(
+              errorDetails: errorDetails,
+            );
+          };
+
+          return widget;
+        },
         home: getFirstScreen(),
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext context) => LoginPage(),
           '/register': (BuildContext context) => RegisterPage(),
           '/forgot-password': (BuildContext context) => ForgotPasswordPage(),
+          '/payment': (BuildContext context) => PaymentScreen(),
         });
   }
 
