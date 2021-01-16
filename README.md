@@ -1,4 +1,12 @@
-# Flutter Demo
+# Hybrid application
+You can use this project as the base Project for your mobile/web/desktop apps.
+Email me at mustafahossaini@gmail.com and I am happy to help you.
+
+Live demo example
+
+https://play.google.com/store/apps/details?id=site.appsfactory
+
+
 
 Fully working firebase Flutter app with authentication and CRUD.
 Instructions and tests are only done on Android at the moment,
